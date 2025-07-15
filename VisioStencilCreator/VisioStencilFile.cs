@@ -54,6 +54,8 @@ namespace VisioStencilCreator
 
         foreach (var image in images)
         {
+            
+            //Console.WriteLine(Path.GetFileName(image));
             var id = images.IndexOf(image) + 1;
             var pngUri = new Uri($"/visio/media/image{id}.png", UriKind.Relative);
             var pngPart = package.CreatePart(pngUri, "image/png");
@@ -84,10 +86,11 @@ namespace VisioStencilCreator
                 "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
                 "rId1");
 
-            var masterName = Path.GetFileName(image).ToLower().Replace(".png", "");
+            var masterName = Path.GetFileNameWithoutExtension(image);
             masterNames += string.Format(MasterNameXmlTemplate, masterName);
 
             var imageThumbnail = ConvertImageToBase64Thumbnail(image);
+
 
             var masterXml = MastersMasterXmlTemplate
                 .Replace("{id}", id.ToString())
