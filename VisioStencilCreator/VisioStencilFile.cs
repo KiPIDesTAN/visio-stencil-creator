@@ -16,7 +16,7 @@ namespace VisioStencilCreator
 {
     public class VisioStencilFile
     {
-        public static Stream GenerateStencilFileFromImages(VisioStencilRequest request)
+        public static Stream GenerateStencilFileFromImages(VisioStencilRequest request, VisioStencilConfig config)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
@@ -31,7 +31,7 @@ namespace VisioStencilCreator
             templateStream.CopyTo(packageStream);
             packageStream.Seek(0, SeekOrigin.Begin);
 
-            GenerateInternal(request.ImageFilePaths, packageStream);
+            GenerateInternal(request.ImageFilePaths, packageStream, config);
 
             packageStream.Seek(0, SeekOrigin.Begin);
 
@@ -39,8 +39,7 @@ namespace VisioStencilCreator
         }
     
 
-    private static void GenerateInternal(IList<string> images,
-        Stream packageStream)
+    private static void GenerateInternal(IList<string> images, Stream packageStream, VisioStencilConfig config)
     {
         var package = Package.Open(
             packageStream,
@@ -50,12 +49,23 @@ namespace VisioStencilCreator
         var masterNames = string.Empty;
         var mastersXmlElements = string.Empty;
 
+        var connections = string.Empty;
+        foreach (VisioConnection connection in config.Connections)
+        {
+            var connectionRow = ConnectionRow
+                .Replace("{name}", connection.Name)
+                .Replace("{x}", connection.X)
+                .Replace("{y}", connection.Y);
+
+            connections += ConnectionSection
+                .Replace("{connectionRows}", connectionRow);
+        }
+        
         var mastersPart = package.CreatePart(new Uri("/visio/masters/masters.xml", UriKind.Relative), "application/vnd.ms-visio.masters+xml");
 
         foreach (var image in images)
         {
             
-            //Console.WriteLine(Path.GetFileName(image));
             var id = images.IndexOf(image) + 1;
             var pngUri = new Uri($"/visio/media/image{id}.png", UriKind.Relative);
             var pngPart = package.CreatePart(pngUri, "image/png");
@@ -72,10 +82,17 @@ namespace VisioStencilCreator
             var masterUri = new Uri($"/visio/masters/master{id}.xml", UriKind.Relative);
             var masterPart = package.CreatePart(masterUri, "application/vnd.ms-visio.master+xml");
 
+            var masterName = Path.GetFileNameWithoutExtension(image);
+
             using (Stream partStream = masterPart.GetStream(FileMode.Create,
                 FileAccess.ReadWrite))
             {
-                using (var masterXmlStream = new MemoryStream(Encoding.UTF8.GetBytes(MasterXmlTemplate)))
+                var masterXmlStencil = MasterXmlTemplate
+                    .Replace("{fileName}", Path.GetFileName(image).ToString())
+                    .Replace("{displayName}", masterName.ToString())
+                    .Replace("{connections}", connections.ToString());
+
+                using (var masterXmlStream = new MemoryStream(Encoding.UTF8.GetBytes(masterXmlStencil)))
                 {
                     masterXmlStream.CopyTo(partStream);
                 }
@@ -86,7 +103,6 @@ namespace VisioStencilCreator
                 "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image",
                 "rId1");
 
-            var masterName = Path.GetFileNameWithoutExtension(image);
             masterNames += string.Format(MasterNameXmlTemplate, masterName);
 
             var imageThumbnail = ConvertImageToBase64Thumbnail(image);
@@ -172,7 +188,19 @@ namespace VisioStencilCreator
     }
 
     private const string MasterXmlTemplate = @"<?xml version='1.0' encoding='utf-8' ?>
-<MasterContents xmlns='http://schemas.microsoft.com/office/visio/2012/main' xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships' xml:space='preserve'><Shapes><Shape ID='5' Type='Foreign' LineStyle='2' FillStyle='2' TextStyle='2'><Cell N='PinX' V='3.49999985328088'/><Cell N='PinY' V='6.49999974324154'/><Cell N='Width' V='0.6666666666666666'/><Cell N='Height' V='0.6666666666666666'/><Cell N='LocPinX' V='0.3333333333333333' F='Width*0.5'/><Cell N='LocPinY' V='0.3333333333333333' F='Height*0.5'/><Cell N='Angle' V='0'/><Cell N='FlipX' V='0'/><Cell N='FlipY' V='0'/><Cell N='ResizeMode' V='0'/><Cell N='ImgOffsetX' V='0' F='ImgWidth*0'/><Cell N='ImgOffsetY' V='0' F='ImgHeight*0'/><Cell N='ImgWidth' V='0.6666666666666666' F='Width*1'/><Cell N='ImgHeight' V='0.6666666666666666' F='Height*1'/><Cell N='ClippingPath' V='' E='#N/A'/><Cell N='TxtPinX' V='0.3333333333333333' F='Width*0.5'/><Cell N='TxtPinY' V='0' F='Height*0'/><Cell N='TxtWidth' V='0.6666666666666666' F='Width*1'/><Cell N='TxtHeight' V='0' F='Height*0'/><Cell N='TxtLocPinX' V='0.3333333333333333' F='TxtWidth*0.5'/><Cell N='TxtLocPinY' V='0' F='TxtHeight*0.5'/><Cell N='TxtAngle' V='0'/><Cell N='VerticalAlign' V='0'/><Section N='Geometry' IX='0'><Cell N='NoFill' V='0'/><Cell N='NoLine' V='0'/><Cell N='NoShow' V='0'/><Cell N='NoSnap' V='0'/><Cell N='NoQuickDrag' V='0'/><Row T='RelMoveTo' IX='1'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row><Row T='RelLineTo' IX='2'><Cell N='X' V='1'/><Cell N='Y' V='0'/></Row><Row T='RelLineTo' IX='3'><Cell N='X' V='1'/><Cell N='Y' V='1'/></Row><Row T='RelLineTo' IX='4'><Cell N='X' V='0'/><Cell N='Y' V='1'/></Row><Row T='RelLineTo' IX='5'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row></Section><ForeignData ForeignType='Bitmap' CompressionType='PNG'><Rel r:id='rId1'/></ForeignData></Shape></Shapes></MasterContents>";
+<MasterContents xmlns='http://schemas.microsoft.com/office/visio/2012/main' xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships' xml:space='preserve'><Shapes><Shape ID='5' Type='Foreign' LineStyle='2' FillStyle='2' TextStyle='2'><Cell N='PinX' V='3.49999985328088'/><Cell N='PinY' V='6.49999974324154'/><Cell N='Width' V='0.6666666666666666'/><Cell N='Height' V='0.6666666666666666'/><Cell N='LocPinX' V='0.3333333333333333' F='Width*0.5'/><Cell N='LocPinY' V='0.3333333333333333' F='Height*0.5'/><Cell N='Angle' V='0'/><Cell N='FlipX' V='0'/><Cell N='FlipY' V='0'/><Cell N='ResizeMode' V='0'/><Cell N='ImgOffsetX' V='0' F='ImgWidth*0'/><Cell N='ImgOffsetY' V='0' F='ImgHeight*0'/><Cell N='ImgWidth' V='0.6666666666666666' F='Width*1'/><Cell N='ImgHeight' V='0.6666666666666666' F='Height*1'/><Cell N='ClippingPath' V='' E='#N/A'/><Cell N='TxtPinX' V='0.3333333333333333' F='Width*0.5'/><Cell N='TxtPinY' V='0' F='Height*0'/><Cell N='TxtWidth' V='0.6666666666666666' F='Width*1'/><Cell N='TxtHeight' V='0' F='Height*0'/><Cell N='TxtLocPinX' V='0.3333333333333333' F='TxtWidth*0.5'/><Cell N='TxtLocPinY' V='0' F='TxtHeight*0.5'/><Cell N='TxtAngle' V='0'/><Cell N='VerticalAlign' V='0'/><Section N='Geometry' IX='0'><Cell N='NoFill' V='0'/><Cell N='NoLine' V='0'/><Cell N='NoShow' V='0'/><Cell N='NoSnap' V='0'/><Cell N='NoQuickDrag' V='0'/><Row T='RelMoveTo' IX='1'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row><Row T='RelLineTo' IX='2'><Cell N='X' V='1'/><Cell N='Y' V='0'/></Row><Row T='RelLineTo' IX='3'><Cell N='X' V='1'/><Cell N='Y' V='1'/></Row><Row T='RelLineTo' IX='4'><Cell N='X' V='0'/><Cell N='Y' V='1'/></Row><Row T='RelLineTo' IX='5'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row></Section><Section N='Property'><Row N='Label'><Cell N='Value' V='{fileName}' U='STR'/><Cell N='Prompt' V='{displayName}'/><Cell N='Label' V='{displayName}'/><Cell N='Format' V=''/><Cell N='SortKey' V=''/><Cell N='Type' V='0'/><Cell N='Invisible' V='0'/><Cell N='Verify' V='0'/><Cell N='DataLinked' V='0'/><Cell N='LangID' V='en-US'/><Cell N='Calendar' V='0'/></Row></Section>{connections}<ForeignData ForeignType='Bitmap' CompressionType='PNG'><Rel r:id='rId1'/></ForeignData></Shape></Shapes></MasterContents>";
+
+    private const string ConnectionSection = @"<Section N='Connection'>{connectionRows}</Section>";
+    private const string ConnectionRow = @"<Row T='Connection' N='{name}'>
+    <Cell N='X' F='{x}'/>
+    <Cell N='Y' F='{y}'/>
+    <Cell N='DirX' V='0'/>
+    <Cell N='DirY' V='0'/>
+    <Cell N='Type' V='0'/>
+    <Cell N='AutoGen' V='0'/>
+    <Cell N='Prompt' V='' F='No Formula'/>
+</Row>
+    ";
 
     private const string MasterNameXmlTemplate = @"<vt:lpstr>{0}</vt:lpstr>";
 

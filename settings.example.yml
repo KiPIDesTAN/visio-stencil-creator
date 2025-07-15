@@ -1,0 +1,28 @@
+connections:
+  - name: North
+    x: Width*0.5
+    y: Height*1.1
+  - name: NorthEast
+    x: Width*1.1
+    y: Height*1.1
+  - name: East
+    x: Width*1.1
+    y: Height*0.5
+  - name: SouthEast
+    x: Width*1.1
+    y: Height*-0.1
+  - name: South
+    x: Width*0.5
+    y: Height*-0.1
+  - name: SouthWest
+    x: Width*-0.1
+    y: Height*-0.1
+  - name: West
+    x: Width*-0.1
+    y: Height*0.5
+  - name: NorthWest
+    x: Width*-0.1
+    y: Height*1.1
+  - name: SouthOfText
+    x: Width*0.5
+    y: -8mm

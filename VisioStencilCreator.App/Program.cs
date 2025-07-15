@@ -1,15 +1,28 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace VisioStencilCreator.App
 {
+
     class Program
     {
         static int Main(string[] args)
         {
+
+            string filePath = @"./settings.yml";
+            string fileContent = File.ReadAllText(filePath);
+            var deserializer = new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+
+            var config = deserializer.Deserialize<VisioStencilConfig>(fileContent);
+
             if (args == null || !args.Any())
             {
                 Console.WriteLine("Missing arguments.");
@@ -85,7 +98,7 @@ namespace VisioStencilCreator.App
 
             using (var fileStream = File.Create(outputFilename))
             {
-               var stream = VisioStencilFile.GenerateStencilFileFromImages(request);
+               var stream = VisioStencilFile.GenerateStencilFileFromImages(request, config);
 
                stream.CopyTo(fileStream);
             }
