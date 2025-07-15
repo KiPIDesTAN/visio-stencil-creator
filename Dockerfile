@@ -1,17 +1,12 @@
-FROM microsoft/dotnet:2.2-sdk as build
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /build
 COPY . /build
+RUN mkdir /app
 
 RUN dotnet restore /build/VisioStencilCreator.App/VisioStencilCreator.App.csproj
 RUN dotnet publish /build/VisioStencilCreator.App/VisioStencilCreator.App.csproj -o /app
 
-FROM microsoft/dotnet:2.2-runtime as final
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS final
 COPY --from=build /app /app
-
-# From https://github.com/JanKallman/EPPlus/issues/83#issuecomment-404570402
-RUN ln -s /lib/x86_64-linux-gnu/libdl.so.2 /lib/x86_64-linux-gnu/libdl.so \
-    && apt-get update \
-    && apt-get install -y libgdiplus \
-    && ln -s /usr/lib/libgdiplus.so /lib/x86_64-linux-gnu/libgdiplus.so 
 
 ENTRYPOINT [ "dotnet", "/app/VisioStencilCreator.App.dll" ]

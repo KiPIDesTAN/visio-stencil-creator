@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
+//using System.Drawing;
+//using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Packaging;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Formats.Bmp;
+
 namespace VisioStencilCreator
 {
     public class VisioStencilFile
@@ -141,17 +145,27 @@ namespace VisioStencilCreator
 
     private static string ConvertImageToBase64Thumbnail(string originalImagePath)
     {
-        using (var memoryStream = new MemoryStream())
-        {
-            var original = Image.FromFile(originalImagePath);
-            var destImage = new Bitmap(original, 16, 16);
 
-            destImage.Save(memoryStream, ImageFormat.Bmp);
-            memoryStream.Position = 0;
-            byte[] byteBuffer = memoryStream.ToArray();
 
-            return Convert.ToBase64String(byteBuffer, Base64FormattingOptions.InsertLineBreaks);
-        }
+        using var original = Image.Load<Rgba32>(originalImagePath);
+        using var ms = new MemoryStream();
+        
+        original.Save(ms, new BmpEncoder());
+        return Convert.ToBase64String(ms.ToArray());
+
+        //using (var memoryStream = new MemoryStream())
+        //{
+            //var original = Image.FromFile(originalImagePath);
+            //var destImage = new Bitmap(original, 16, 16);
+            //var destImage = 
+
+            //destImage.Save(memoryStream, ImageFormat.Bmp);
+            //memoryStream.Position = 0;
+            //byte[] byteBuffer = memoryStream.ToArray();
+
+            
+        //    return Convert.ToBase64String(byteBuffer, Base64FormattingOptions.InsertLineBreaks);
+        //}
     }
 
     private const string MasterXmlTemplate = @"<?xml version='1.0' encoding='utf-8' ?>
