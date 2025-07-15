@@ -10,10 +10,10 @@ Docker image `hoveytech/visio-stencil-creator` prebuild using this source. Repla
 docker run \
     -v <content-path>:/content \
     hoveytech/visio-stencil-creator:v0.2 \
-    "--image-path=/app/content" \
+    "--image-path=/content" \
     "--image-pattern=*.png" \
     "--output-filename=/content/output.vssx"
 ```
 
 **Additional notes:**
-* Parameter `--image-pattern` supports glob pattern searching, which internally uses [Microsoft.Extensions.FileSystemGlobbing](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.filesystemglobbing?view=aspnetcore-2.2) Nuget Package.
+* Parameter `--image-pattern` supports glob pattern searching, which internally uses [Microsoft.Extensions.FileSystemGlobbing](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.filesystemglobbing?view=aspnetcore-2.2) Nuget Package. e.g., --image-pattern=**/*.png will recursively search a directory for png files.
