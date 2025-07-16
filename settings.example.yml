@@ -1,4 +1,10 @@
+image:
+  maxSize: 128    # When an image has a height or width dimension greater than maxSize in pixels, the image is scaled such that the smaller of the two dimensions is maxSize pixels
 connections:
+  # A list of connections for Visio to apply to the image.
+  # name: Name of the connection when reviewing the ShapeSheet
+  # x: Formula for calculating the width of the image
+  # y: Formula for calculating the height of the image
   - name: North
     x: Width*0.5
     y: Height*1.1

@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace VisioStencilCreator
 {
-    
+    public class VisioImage
+    {
+        public int MaxSize { get; set; }
+    }
+
     public class VisioConnection
     {
         public string Name { get; set; }
@@ -16,6 +20,7 @@ namespace VisioStencilCreator
 
     public class VisioStencilConfig
     {
+        public VisioImage Image { get; set; } = null;
         public IList<VisioConnection> Connections { get; set; } = new List<VisioConnection>();
     }
 

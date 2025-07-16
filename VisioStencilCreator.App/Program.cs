@@ -15,6 +15,7 @@ namespace VisioStencilCreator.App
         static int Main(string[] args)
         {
 
+            // TODO: Do a check and throw an error if this file doesn't exist
             string filePath = @"./settings.yml";
             string fileContent = File.ReadAllText(filePath);
             var deserializer = new DeserializerBuilder()
