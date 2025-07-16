@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-//using System.Drawing;
-//using System.Drawing.Imaging;
+using System.Linq;
 using System.IO;
 using System.IO.Packaging;
 using System.Reflection;
@@ -48,8 +47,6 @@ namespace VisioStencilCreator
             var masterNames = string.Empty;
             var mastersXmlElements = string.Empty;
 
-            Console.WriteLine($"Max Size: {config.Image.MaxSize}");
-
             var connections = string.Empty;
             foreach (VisioConnection connection in config.Connections)
             {
@@ -64,7 +61,11 @@ namespace VisioStencilCreator
 
             var mastersPart = package.CreatePart(new Uri("/visio/masters/masters.xml", UriKind.Relative), "application/vnd.ms-visio.masters+xml");
 
-            foreach (var image in images)
+            var sortedImages = images
+                .OrderBy(path => Path.GetFileNameWithoutExtension(path), StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            foreach (var image in sortedImages)
             {
 
                 var id = images.IndexOf(image) + 1;
@@ -98,7 +99,6 @@ namespace VisioStencilCreator
                         {
                             dpiX = tempImage.Metadata.HorizontalResolution * 0.0254f;
                             dpiY = tempImage.Metadata.VerticalResolution * 0.0254f;
-                            Console.WriteLine($"DPI - {dpiX} {dpiY}");
                         }
                         int maxSize = config.Image.MaxSize;
                         int widthPx = tempImage.Width;

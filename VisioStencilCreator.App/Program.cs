@@ -73,13 +73,14 @@ namespace VisioStencilCreator.App
                 Console.WriteLine("Output filename must have 'vssx' extension");
                 return 1;
             }
-            
+
             var matcher = new Matcher();
             matcher.AddIncludePatterns(imagePattern.Split(';'));
             var result = matcher.Execute(new DirectoryInfoWrapper(new DirectoryInfo(imagePath)));
 
             var imageFiles = result.Files
                 .Select(x => Path.GetFullPath(Path.Combine(imagePath, x.Path)))
+                .OrderBy(path => Path.GetFileNameWithoutExtension(path), StringComparer.OrdinalIgnoreCase)
                 .ToList();
 
             if (imageFiles.Count == 0)
@@ -99,9 +100,9 @@ namespace VisioStencilCreator.App
 
             using (var fileStream = File.Create(outputFilename))
             {
-               var stream = VisioStencilFile.GenerateStencilFileFromImages(request, config);
+                var stream = VisioStencilFile.GenerateStencilFileFromImages(request, config);
 
-               stream.CopyTo(fileStream);
+                stream.CopyTo(fileStream);
             }
 
             return 0;
