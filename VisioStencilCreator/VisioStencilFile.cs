@@ -100,6 +100,11 @@ namespace VisioStencilCreator
                             dpiX = tempImage.Metadata.HorizontalResolution * 0.0254f;
                             dpiY = tempImage.Metadata.VerticalResolution * 0.0254f;
                         }
+                        else if (tempImage.Metadata.ResolutionUnits == PixelResolutionUnit.PixelsPerInch)
+                        {
+                            dpiX = tempImage.Metadata.HorizontalResolution;
+                            dpiY = tempImage.Metadata.VerticalResolution;
+                        }
                         int maxSize = config.Image.MaxSize;
                         int widthPx = tempImage.Width;
                         int heightPx = tempImage.Height;
