@@ -50,5 +50,5 @@ Below is a list of image sources I use when generating Stencils. Just make sure 
 * [CNCF Artwork](https://github.com/cncf/artwork/tree/main?tab=readme-ov-file) - Cloud Native Computing Foundation logos.
 * [Companies Logos](https://companieslogo.com/) - Company logos.
 * [Amazing Icon Downloader](https://github.com/mattl-msft/Amazing-Icon-Downloader) - A browser plugin for Edge and Chrome that downloads SVGs from the Azure Portal.
-
+* [Fabric-Icons](https://github.com/FabricTools/fabric-icons) - Publically available SVG icons for Microsoft Fabric from the '@fabric-msft/svg-icons' NPM package.
 

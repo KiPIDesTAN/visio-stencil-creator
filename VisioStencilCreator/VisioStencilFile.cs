@@ -133,7 +133,8 @@ namespace VisioStencilCreator
                         .Replace("{displayName}", masterName.ToString())
                         .Replace("{connections}", connections.ToString())
                         .Replace("{width}", scaledWidth.ToString())
-                        .Replace("{height}", scaledHeight.ToString());
+                        .Replace("{height}", scaledHeight.ToString())
+                        .Replace("{visAltText}", masterName.ToString());
 
                     using (var masterXmlStream = new MemoryStream(Encoding.UTF8.GetBytes(masterXmlStencil)))
                     {
@@ -234,11 +235,27 @@ namespace VisioStencilCreator
     <Cell N='Angle' V='0'/>
     <Cell N='FlipX' V='0'/>
     <Cell N='FlipY' V='0'/>
-    <Cell N='ResizeMode' V='0'/>
+    <Cell N='ResizeMode' V='2'/>
     <Cell N='ImgOffsetX' V='0' F='ImgWidth*0'/>
     <Cell N='ImgOffsetY' V='0' F='ImgHeight*0'/>
-    <Cell N='ImgWidth' F='Width*1'/><Cell N='ImgHeight' F='Height*1'/>
-    <Cell N='ClippingPath' V='' E='#N/A'/><Cell N='TxtPinX' V='0.3333333333333333' F='Width*0.5'/><Cell N='TxtPinY' V='0' F='Height*0'/><Cell N='TxtWidth' V='0.6666666666666666' F='Width*1'/><Cell N='TxtHeight' V='0' F='Height*0'/><Cell N='TxtLocPinX' V='0.3333333333333333' F='TxtWidth*0.5'/><Cell N='TxtLocPinY' V='0' F='TxtHeight*0.5'/><Cell N='TxtAngle' V='0'/><Cell N='VerticalAlign' V='0'/><Section N='Geometry' IX='0'><Cell N='NoFill' V='0'/><Cell N='NoLine' V='0'/><Cell N='NoShow' V='0'/><Cell N='NoSnap' V='0'/><Cell N='NoQuickDrag' V='0'/><Row T='RelMoveTo' IX='1'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row><Row T='RelLineTo' IX='2'><Cell N='X' V='1'/><Cell N='Y' V='0'/></Row><Row T='RelLineTo' IX='3'><Cell N='X' V='1'/><Cell N='Y' V='1'/></Row><Row T='RelLineTo' IX='4'><Cell N='X' V='0'/><Cell N='Y' V='1'/></Row><Row T='RelLineTo' IX='5'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row></Section><Section N='Property'><Row N='Label'><Cell N='Value' V='{fileName}' U='STR'/><Cell N='Prompt' V='{displayName}'/><Cell N='Label' V='{displayName}'/><Cell N='Format' V=''/><Cell N='SortKey' V=''/><Cell N='Type' V='0'/><Cell N='Invisible' V='0'/><Cell N='Verify' V='0'/><Cell N='DataLinked' V='0'/><Cell N='LangID' V='en-US'/><Cell N='Calendar' V='0'/></Row></Section>{connections}<ForeignData ForeignType='Bitmap' CompressionType='PNG'><Rel r:id='rId1'/></ForeignData></Shape></Shapes></MasterContents>";
+    <Cell N='ImgWidth' F='Width*1'/>
+    <Cell N='ImgHeight' F='Height*1'/>
+    <Cell N='ClippingPath' V='' E='#N/A'/>
+    <Cell N='EventDblClick' V='0' F='OPENTEXTWIN()'/>
+    <Cell N='TxtPinX' V='0.3333333333333333' F='Width*0.5'/>
+    <Cell N='TxtPinY' V='0' F='Height*0'/>
+    <Cell N='TxtWidth' V='0.6666666666666666' F='TEXTWIDTH(TheText)'/>
+    <Cell N='TxtHeight' V='0' F='TEXTHEIGHT(TheText,TxtWidth)'/>
+    <Cell N='TxtLocPinX' V='0' F='TxtWidth*0.5'/>
+    <Cell N='TxtLocPinY' V='0' F='TxtHeight*0.5'/>
+    <Cell N='TxtAngle' V='0'/>
+    <Cell N='VerticalAlign' V='0'/>
+    <Section N='User'>
+        <Row N='visAltText'>
+            <Cell N='Value' V='{visAltText}' U='STR'/>
+        </Row>
+    </Section>
+    <Section N='Geometry' IX='0'><Cell N='NoFill' V='0'/><Cell N='NoLine' V='0'/><Cell N='NoShow' V='0'/><Cell N='NoSnap' V='0'/><Cell N='NoQuickDrag' V='0'/><Row T='RelMoveTo' IX='1'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row><Row T='RelLineTo' IX='2'><Cell N='X' V='1'/><Cell N='Y' V='0'/></Row><Row T='RelLineTo' IX='3'><Cell N='X' V='1'/><Cell N='Y' V='1'/></Row><Row T='RelLineTo' IX='4'><Cell N='X' V='0'/><Cell N='Y' V='1'/></Row><Row T='RelLineTo' IX='5'><Cell N='X' V='0'/><Cell N='Y' V='0'/></Row></Section><Section N='Property'><Row N='Label'><Cell N='Value' V='{fileName}' U='STR'/><Cell N='Prompt' V='{displayName}'/><Cell N='Label' V='{displayName}'/><Cell N='Format' V=''/><Cell N='SortKey' V=''/><Cell N='Type' V='0'/><Cell N='Invisible' V='0'/><Cell N='Verify' V='0'/><Cell N='DataLinked' V='0'/><Cell N='LangID' V='en-US'/><Cell N='Calendar' V='0'/></Row></Section>{connections}<ForeignData ForeignType='Bitmap' CompressionType='PNG'><Rel r:id='rId1'/></ForeignData></Shape></Shapes></MasterContents>";
 
         private const string ConnectionSection = @"<Section N='Connection'>{connectionRows}</Section>";
         private const string ConnectionRow = @"<Row T='Connection' N='{name}'>
