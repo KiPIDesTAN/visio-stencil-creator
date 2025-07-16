@@ -46,7 +46,7 @@ docker run \
 
 Below is a list of image sources I use when generating Stencils. Just make sure to attribute things correct.
 
-* [Kubernetes Icons](https://github.com/singaravelanaws/kubernetes-Icons) - Kubernetes icons.
+* [Kubernetes Icons](https://github.com/kubernetes/community/tree/master/icons) - Kubernetes icons.
 * [CNCF Artwork](https://github.com/cncf/artwork/tree/main?tab=readme-ov-file) - Cloud Native Computing Foundation logos.
 * [Companies Logos](https://companieslogo.com/) - Company logos.
 * [Amazing Icon Downloader](https://github.com/mattl-msft/Amazing-Icon-Downloader) - A browser plugin for Edge and Chrome that downloads SVGs from the Azure Portal.
