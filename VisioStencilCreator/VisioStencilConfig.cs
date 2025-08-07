@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace VisioStencilCreator
 {
     public class VisioImage
     {
-        public int MaxSize { get; set; }
+        public int TargetArea { get; set; }
     }
 
     public class VisioConnection

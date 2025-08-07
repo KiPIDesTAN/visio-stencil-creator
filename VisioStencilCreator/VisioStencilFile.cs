@@ -84,35 +84,35 @@ namespace VisioStencilCreator
                         // fileStream.CopyTo(partStream);
 
                         using var tempImage = Image.Load(fileStream);
-                        //// imageSharpImage.Mutate(x => x.Resize(newWidth, newHeight));
-                        // 
-                        // imageSharpImage.Mutate( x => x
-                        //         .Resize(new ResizeOptions
-                        //             {
-                        //                 Size = new Size(newWidth, newHeight),
-                        //                 Mode = ResizeMode.Max,
-                        //                 Sampler = KnownResamplers.Lanczos3,
-                        //                 Compand = true
-                        //                 }));
+
                         double dpiX = 0.0, dpiY = 0.0;  // TODO: We need a failure if dpiX and Y are 0 after the if statement below
-                        if (tempImage.Metadata.ResolutionUnits == PixelResolutionUnit.PixelsPerMeter)
+                        if (tempImage.Metadata.ResolutionUnits == PixelResolutionUnit.PixelsPerCentimeter)
                         {
-                            dpiX = tempImage.Metadata.HorizontalResolution * 0.0254f;
-                            dpiY = tempImage.Metadata.VerticalResolution * 0.0254f;
+                            dpiX = tempImage.Metadata.HorizontalResolution * 2.54f;
+                            dpiY = tempImage.Metadata.VerticalResolution * 2.54;
                         }
                         else if (tempImage.Metadata.ResolutionUnits == PixelResolutionUnit.PixelsPerInch)
                         {
                             dpiX = tempImage.Metadata.HorizontalResolution;
                             dpiY = tempImage.Metadata.VerticalResolution;
                         }
-                        int maxSize = config.Image.MaxSize;
+                        else if (tempImage.Metadata.ResolutionUnits == PixelResolutionUnit.PixelsPerMeter)
+                        {
+                            dpiX = tempImage.Metadata.HorizontalResolution * 0.0254f;
+                            dpiY = tempImage.Metadata.VerticalResolution * 0.0254f;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Could not get proper image resolution metadata. Skipping file...");
+                            continue;
+                        }
+
                         int widthPx = tempImage.Width;
                         int heightPx = tempImage.Height;
-                        float scale = 1.0F;
+                        int area = widthPx * heightPx;
                         double widthInches = widthPx / dpiX;
                         double heightInches = heightPx / dpiY;
-                        if (widthPx > maxSize || heightPx > maxSize) // Only scale the image if the height or widht are greater than maxSize. This doesn't resize the image. It just sets the rendering size in Visio for now.
-                            scale = (float)maxSize / Math.Min(tempImage.Width, tempImage.Height);
+                        double scale = Math.Sqrt((double)config.Image.TargetArea / area);
                         scaledWidth = widthInches * scale;
                         scaledHeight = heightInches * scale;
 

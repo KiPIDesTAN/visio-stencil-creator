@@ -1,7 +1,7 @@
 image:
-  # When an image has a height or width dimension greater than maxSize in pixels, the image is scaled such that the smaller of the two dimensions is maxSize pixels.
-  # We assume the png dpi is 96 for this calculation. We can always fix this later. pixels = inches x DPI.
-  maxSize: 48
+  # targetArea represents a normalized resizing approach based on the overall area the image takes up. This allows long or wide rectangles
+  # be visually in alignment with squares because their area (w * h) is about the same.
+  targetArea: 2304
 connections:
   # A list of connections for Visio to apply to the image.
   # name: Name of the connection when reviewing the ShapeSheet
