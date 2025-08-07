@@ -242,8 +242,8 @@ namespace VisioStencilCreator
     <Cell N='ImgHeight' F='Height*1'/>
     <Cell N='ClippingPath' V='' E='#N/A'/>
     <Cell N='EventDblClick' V='0' F='OPENTEXTWIN()'/>
-    <Cell N='TxtPinX' V='0' F='Width*0.5'/>
-    <Cell N='TxtPinY' V='0' F='Height*-0.25'/>
+    <Cell N='TxtPinX' V='0.3937007874015748' U='MM' F='Width*0.5'/>
+    <Cell N='TxtPinY' V='-0.1476377952755905' F='Height*-0.25'/>
     <Cell N='TxtWidth' V='0.6666666666666666' F='TEXTWIDTH(TheText)'/>
     <Cell N='TxtHeight' V='0' F='TEXTHEIGHT(TheText,TxtWidth)'/>
     <Cell N='TxtLocPinX' V='0' F='TxtWidth*0.5'/>
